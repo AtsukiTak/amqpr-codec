@@ -6,7 +6,7 @@ license = "MIT/Apache-2.0"
 description = "A tokio based amqp codec library mainly used by amqpr."
 repository = "https://github.com/AtsukiTak/amqp-codec"
 keywords = ["amqp", "rabbitmq"]
-categories = ["network-programming", "amqp", "rabbitmq"]
+categories = ["network-programming", "encoding"]
 
 [dependencies]
 tokio-io = "0.1"
