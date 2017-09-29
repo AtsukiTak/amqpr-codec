@@ -2,10 +2,13 @@
 name = "amqpr-codec"
 version = "0.1.0"
 authors = ["AtsukiTak <takatomgoo@gmail.com>"]
+license = "MIT/Apache-2.0"
+description = "A tokio based amqp codec library mainly used by amqpr."
+repository = "https://github.com/AtsukiTak/amqp-codec"
+keywords = ["amqp", "rabbitmq"]
+categories = ["network-programming", "amqp", "rabbitmq"]
 
 [dependencies]
-futures = "0.1"
-tokio-core = "0.1"
 tokio-io = "0.1"
 
 bytes = "0.4"
