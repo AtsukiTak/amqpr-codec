@@ -1,6 +1,6 @@
 [package]
 name = "amqpr-codec"
-version = "0.1.7"
+version = "0.1.0"
 authors = ["AtsukiTak <takatomgoo@gmail.com>"]
 
 [dependencies]
