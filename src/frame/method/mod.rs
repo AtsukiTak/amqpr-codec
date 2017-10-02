@@ -1,8 +1,6 @@
 pub mod decoder;
 pub mod encoder;
 
-pub use self::encoder::byte_size_of_payload;
-
 use methods::args::Arguments;
 
 #[derive(PartialEq, Clone, Debug)]

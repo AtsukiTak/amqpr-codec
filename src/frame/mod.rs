@@ -67,8 +67,6 @@ impl Encoder for Codec {
     type Error = Error;
 
     fn encode(&mut self, item: Self::Item, dst: &mut BytesMut) -> Result<()> {
-        let mut buf = Vec::new();
-        self::encoder::encode_frame(item, &mut buf)?;
-        Ok(dst.extend_from_slice(buf.as_ref()))
+        self::encoder::encode_frame(item, dst)
     }
 }

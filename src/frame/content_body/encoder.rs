@@ -10,8 +10,3 @@ pub fn encode_payload(payload: ContentBodyPayload, dst: &mut Vec<u8>) -> Result<
     dst.put(payload.bytes);
     Ok(())
 }
-
-
-pub fn byte_size_of_payload(payload: &ContentBodyPayload) -> u32 {
-    payload.bytes.len() as u32
-}

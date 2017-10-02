@@ -17,8 +17,3 @@ pub fn encode_payload(payload: ContentHeaderPayload, dst: &mut Vec<u8>) -> Resul
 
     Ok(())
 }
-
-
-pub fn byte_size_of_payload(_payload: &ContentHeaderPayload) -> u32 {
-    14_u32
-}
