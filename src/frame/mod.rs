@@ -6,15 +6,9 @@ pub mod content_body;
 pub mod content_header;
 
 
-use tokio_io::codec::{Decoder, Encoder};
-
-use bytes::BytesMut;
-
 use self::method::MethodPayload;
 use self::content_header::ContentHeaderPayload;
 use self::content_body::ContentBodyPayload;
-
-use errors::*;
 
 
 pub const FRAME_END_OCTET: u8 = 0xCE;
@@ -49,24 +43,4 @@ pub enum FramePayload {
     ContentHeader(ContentHeaderPayload),
     ContentBody(ContentBodyPayload),
     Heartbeat,
-}
-
-pub struct Codec;
-
-impl Decoder for Codec {
-    type Item = Frame;
-    type Error = Error;
-
-    fn decode(&mut self, src: &mut BytesMut) -> Result<Option<Self::Item>> {
-        self::decoder::decode_frame(src)
-    }
-}
-
-impl Encoder for Codec {
-    type Item = Frame;
-    type Error = Error;
-
-    fn encode(&mut self, item: Self::Item, dst: &mut BytesMut) -> Result<()> {
-        self::encoder::encode_frame(item, dst)
-    }
 }

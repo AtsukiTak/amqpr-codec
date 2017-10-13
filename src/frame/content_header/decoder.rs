@@ -1,18 +1,16 @@
-use bytes::{Bytes, BigEndian, Buf};
+use bytes::{BytesMut, BigEndian, Buf};
 
 use std::io::Cursor;
 
 use super::ContentHeaderPayload;
-use errors::Error;
 
-pub fn decode_payload(payload: &mut Cursor<Bytes>) -> Result<ContentHeaderPayload, Error> {
-    let class_id = payload.get_u16::<BigEndian>();
-    let weight = payload.get_u16::<BigEndian>(); // must be zero
+pub fn decode_payload(payload: BytesMut) -> ContentHeaderPayload {
+    let mut cursor = Cursor::new(payload);
+    let class_id = cursor.get_u16::<BigEndian>();
+    let weight = cursor.get_u16::<BigEndian>(); // must be zero
     assert_eq!(weight, 0);
-    let body_size = payload.get_u64::<BigEndian>();
-    let property_flags = payload.get_u16::<BigEndian>();
-    debug!("remainder num {}",
-           payload.get_ref().len() - payload.position() as usize);
+    let body_size = cursor.get_u64::<BigEndian>();
+    let property_flags = cursor.get_u16::<BigEndian>();
 
     let payload = ContentHeaderPayload {
         class_id: class_id,
@@ -20,5 +18,5 @@ pub fn decode_payload(payload: &mut Cursor<Bytes>) -> Result<ContentHeaderPayloa
         property_flags: property_flags,
     };
 
-    Ok(payload)
+    payload
 }

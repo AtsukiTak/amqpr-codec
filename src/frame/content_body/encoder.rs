@@ -1,12 +1,9 @@
-use bytes::BufMut;
+use bytes::Bytes;
 
 use super::ContentBodyPayload;
-use errors::*;
 
-pub fn encode_payload(payload: ContentBodyPayload, dst: &mut Vec<u8>) -> Result<()> {
+pub fn encode_payload(payload: ContentBodyPayload) -> Bytes {
     debug!("Start encoding content body : {:?}", payload);
 
-    // dst.reserve(payload.bytes.len() + 1);
-    dst.put(payload.bytes);
-    Ok(())
+    payload.bytes
 }

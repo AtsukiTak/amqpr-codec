@@ -1,31 +1,27 @@
-use bytes::{Bytes, BytesMut, BigEndian, Buf};
+use bytes::{BytesMut, BigEndian, Buf};
 
 use std::io::{Cursor, Seek, SeekFrom};
 
 use frame::{Frame, FrameHeader, FrameType, FramePayload, FRAME_END_OCTET, method, content_body,
             content_header};
-use errors::*;
 
-pub fn decode_frame(src: &mut BytesMut) -> Result<Option<Frame>> {
+const FRAME_HEADER_BYTE_SIZE: usize = 7;
+
+pub fn decode_frame(src: &mut BytesMut) -> Option<Frame> {
 
     debug!("Decode frame : {:?}", src);
 
-    match extract_frame_bytes(src)? {
-        Some(frame_bytes) => {
+    match extract_frame_bytes(src) {
+        Some(mut frame_bytes) => {
             debug!("Extracted a frame : {:?}", frame_bytes);
 
-            let mut cursor = Cursor::new(frame_bytes);
-
-            let (typ, channel, payload_size) = decode_header(&mut cursor)?;
+            let (typ, channel, payload_size) = decode_header(frame_bytes.split_to(FRAME_HEADER_BYTE_SIZE));
 
             debug!("frame type is {:?}", typ);
             debug!("frame channel is {}", channel);
             debug!("frame payload_size is {}", payload_size);
 
-            let payload = decode_payload(&typ, &mut cursor)?;
-
-            // return Err if frame-end is invlaid.
-            check_frame_end(&mut cursor)?;
+            let payload = decode_payload(&typ, frame_bytes.split_to(payload_size as usize));
 
             let frame = Frame {
                 header: FrameHeader {
@@ -37,70 +33,62 @@ pub fn decode_frame(src: &mut BytesMut) -> Result<Option<Frame>> {
 
             debug!("Finish decoding frame : {:?}", frame);
 
-            Ok(Some(frame))
+            Some(frame)
         }
-        None => Ok(None),
+        None => None,
     }
 }
 
 
 /// Extract a frame bytes.
 /// If there is not enough length to make frame, this function returns None.
-/// If there is enough length, this function extract it.
-fn extract_frame_bytes(src: &mut BytesMut) -> Result<Option<Bytes>> {
+/// If there is enough length, this function extract it after check frame end.
+///
+/// # Panics
+/// If frame end is invalid
+fn extract_frame_bytes(src: &mut BytesMut) -> Option<BytesMut> {
     if src.len() < 8 {
-        Ok(None)
+        None
     } else {
         let mut cursor = Cursor::new(src);
-        cursor.seek(SeekFrom::Current(3 as i64))?;
+        cursor.seek(SeekFrom::Current(3_i64)).expect("Never fail");
         let size = cursor.get_u32::<BigEndian>() as usize;
 
         let src = cursor.into_inner();
 
         if src.len() >= size + 8 {
-            Ok(Some(src.split_to(size + 8).freeze()))
+            let bytes = src.split_to(size + 8);
+
+            // Check frame end
+            if !bytes.as_ref().ends_with(&[FRAME_END_OCTET]) {
+                panic!("Invalid Frame End");
+            }
+
+            Some(bytes)
         } else {
-            Ok(None)
+            None
         }
     }
 }
 
 
 /// Decode frame header. This function returns tuple of (type_octet, channel_id, body_size).
-/// You **MUST** give `Bytes` which has enough length.
 ///
 /// # Panics
 /// when `src` does not have enough length.
-fn decode_header(cursor: &mut Cursor<Bytes>) -> Result<(FrameType, u16, u32)> {
+fn decode_header(bytes: BytesMut) -> (FrameType, u16, u32) {
+    let mut cursor = Cursor::new(bytes);
     let typ = match cursor.get_u8() {
         1 => FrameType::Method,
         2 => FrameType::ContentHeader,
         3 => FrameType::ContentBody,
         4 | 8 => FrameType::Heartbeat, // RabbitMQ sends heartbeat frame starting with 8
-        b => return Err(ErrorKind::InvalidFrameTypeByte(b).into()),
+        b => unreachable!("Unexpected frame type '{}' is received", b),
     };
     let channel = cursor.get_u16::<BigEndian>();
     let size = cursor.get_u32::<BigEndian>();
 
-    Ok((typ, channel, size))
-}
-
-
-/// Check frame-end.
-/// We do it before read payload because
-/// we can find below text in the official document.
-///
-/// """ When a peer reads a frame it MUST check that the frame-end is valud before
-/// attempting to decode the frame."""
-///
-/// TODO
-/// Investigate above restriction is needed. If not, we can improve performance.
-fn check_frame_end(cursor: &mut Cursor<Bytes>) -> Result<()> {
-    if cursor.get_ref().ends_with(&[FRAME_END_OCTET]) {
-        Ok(())
-    } else {
-        Err(ErrorKind::InvalidFrameEnd.into())
-    }
+    (typ, channel, size)
 }
 
 
@@ -109,13 +97,13 @@ fn check_frame_end(cursor: &mut Cursor<Bytes>) -> Result<()> {
 ///
 /// # Panics
 /// when `payload` does not have enough length.
-fn decode_payload(typ: &FrameType, payload: &mut Cursor<Bytes>) -> Result<FramePayload> {
+fn decode_payload(typ: &FrameType, payload: BytesMut) -> FramePayload {
     use self::FrameType::*;
     let payload = match *typ {
-        Method => FramePayload::Method(method::decoder::decode_payload(payload)?),
-        ContentHeader => FramePayload::ContentHeader(content_header::decode_payload(payload)?),
-        ContentBody => FramePayload::ContentBody(content_body::decode_payload(payload)?),
+        Method => FramePayload::Method(method::decoder::decode_payload(payload)),
+        ContentHeader => FramePayload::ContentHeader(content_header::decode_payload(payload)),
+        ContentBody => FramePayload::ContentBody(content_body::decode_payload(payload)),
         Heartbeat => FramePayload::Heartbeat,
     };
-    Ok(payload)
+    payload
 }
