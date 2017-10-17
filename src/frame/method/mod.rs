@@ -37,6 +37,53 @@ pub enum MethodPayload {
 }
 
 
+// Implementation of MethodPayload {{{
+impl MethodPayload {
+    pub fn connection(&self) -> Option<&ConnectionClass> {
+        match self {
+            &MethodPayload::Connection(ref c) => Some(c),
+            _ => None,
+        }
+    }
+
+    pub fn channel(&self) -> Option<&ChannelClass> {
+        match self {
+            &MethodPayload::Channel(ref c) => Some(c),
+            _ => None,
+        }
+    }
+
+    pub fn exchange(&self) -> Option<&ExchangeClass> {
+        match self {
+            &MethodPayload::Exchange(ref c) => Some(c),
+            _ => None,
+        }
+    }
+
+    pub fn queue(&self) -> Option<&QueueClass> {
+        match self {
+            &MethodPayload::Queue(ref c) => Some(c),
+            _ => None,
+        }
+    }
+
+    pub fn basic(&self) -> Option<&BasicClass> {
+        match self {
+            &MethodPayload::Basic(ref c) => Some(c),
+            _ => None,
+        }
+    }
+
+    pub fn tx(&self) -> Option<&TxClass> {
+        match self {
+            &MethodPayload::Tx(ref c) => Some(c),
+            _ => None,
+        }
+    }
+}
+// }}}
+
+
 
 // Connection module  {{{
 pub mod connection {
@@ -59,6 +106,94 @@ pub mod connection {
         Blocked(BlockedMethod),
         Unblocked,
     }
+
+    // Implementation of ConnectionClass {{{
+    impl ConnectionClass {
+        pub fn start(&self) -> Option<&StartMethod> {
+            match self {
+                &ConnectionClass::Start(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn start_ok(&self) -> Option<&StartOkMethod> {
+            match self {
+                &ConnectionClass::StartOk(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn secure(&self) -> Option<&SecureMethod> {
+            match self {
+                &ConnectionClass::Secure(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn secure_ok(&self) -> Option<&SecureOkMethod> {
+            match self {
+                &ConnectionClass::SecureOk(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn tune(&self) -> Option<&TuneMethod> {
+            match self {
+                &ConnectionClass::Tune(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn tune_ok(&self) -> Option<&TuneOkMethod> {
+            match self {
+                &ConnectionClass::TuneOk(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn open(&self) -> Option<&OpenMethod> {
+            match self {
+                &ConnectionClass::Open(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn open_ok(&self) -> Option<&OpenOkMethod> {
+            match self {
+                &ConnectionClass::OpenOk(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn close(&self) -> Option<&CloseMethod> {
+            match self {
+                &ConnectionClass::Close(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn close_ok(&self) -> Option<()> {
+            match self {
+                &ConnectionClass::CloseOk => Some(()),
+                _ => None,
+            }
+        }
+
+        pub fn blocked(&self) -> Option<&BlockedMethod> {
+            match self {
+                &ConnectionClass::Blocked(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn unblocked(&self) -> Option<()> {
+            match self {
+                &ConnectionClass::Unblocked => Some(()),
+                _ => None,
+            }
+        }
+    }
+    // }}}
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct StartMethod {
@@ -141,6 +276,52 @@ pub mod channel {
         CloseOk,
     }
 
+    // Implementation of ChannelClass {{{
+    impl ChannelClass {
+        pub fn open(&self) -> Option<&OpenMethod> {
+            match self {
+                &ChannelClass::Open(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn open_ok(&self) -> Option<&OpenOkMethod> {
+            match self {
+                &ChannelClass::OpenOk(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn flow(&self) -> Option<&FlowMethod> {
+            match self {
+                &ChannelClass::Flow(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn flow_ok(&self) -> Option<&FlowOkMethod> {
+            match self {
+                &ChannelClass::FlowOk(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn close(&self) -> Option<&CloseMethod> {
+            match self {
+                &ChannelClass::Close(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn close_ok(&self) -> Option<()> {
+            match self {
+                &ChannelClass::CloseOk => Some(()),
+                _ => None,
+            }
+        }
+    }
+    // }}}
+
     #[derive(PartialEq, Clone, Debug)]
     pub struct OpenMethod {
         pub reserved1: String,
@@ -187,6 +368,66 @@ pub mod exchange {
         Unbind(UnbindMethod),
         UnbindOk, // rabbitmq-specific extension
     }
+
+    // Implementation of ExchangeClass {{{
+    impl ExchangeClass {
+        pub fn declare(&self) -> Option<&DeclareMethod> {
+            match self {
+                &ExchangeClass::Declare(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn declare_ok(&self) -> Option<()> {
+            match self {
+                &ExchangeClass::DeclareOk => Some(()),
+                _ => None,
+            }
+        }
+
+        pub fn delete(&self) -> Option<&DeleteMethod> {
+            match self {
+                &ExchangeClass::Delete(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn delete_ok(&self) -> Option<()> {
+            match self {
+                &ExchangeClass::DeleteOk => Some(()),
+                _ => None,
+            }
+        }
+
+        pub fn bind(&self) -> Option<&BindMethod> {
+            match self {
+                &ExchangeClass::Bind(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn bind_ok(&self) -> Option<()> {
+            match self {
+                &ExchangeClass::BindOk => Some(()),
+                _ => None,
+            }
+        }
+
+        pub fn unbind(&self) -> Option<&UnbindMethod> {
+            match self {
+                &ExchangeClass::Unbind(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn unbind_ok(&self) -> Option<()> {
+            match self {
+                &ExchangeClass::UnbindOk => Some(()),
+                _ => None,
+            }
+        }
+    }
+    // }}}
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct DeclareMethod {
@@ -249,6 +490,81 @@ pub mod queue {
         Delete(DeleteMethod),
         DeleteOk(DeleteOkMethod),
     }
+
+    // Implementation of QueueClass {{{
+    impl QueueClass {
+        pub fn declare(&self) -> Option<&DeclareMethod> {
+            match self {
+                &QueueClass::Declare(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn declare_ok(&self) -> Option<&DeclareOkMethod> {
+            match self {
+                &QueueClass::DeclareOk(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn bind(&self) -> Option<&BindMethod> {
+            match self {
+                &QueueClass::Bind(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn bind_ok(&self) -> Option<()> {
+            match self {
+                &QueueClass::BindOk => Some(()),
+                _ => None,
+            }
+        }
+
+        pub fn unbind(&self) -> Option<&UnbindMethod> {
+            match self {
+                &QueueClass::Unbind(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn unbind_ok(&self) -> Option<()> {
+            match self {
+                &QueueClass::UnbindOk => Some(()),
+                _ => None,
+            }
+        }
+
+        pub fn purge(&self) -> Option<&PurgeMethod> {
+            match self {
+                &QueueClass::Purge(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn purge_ok(&self) -> Option<&PurgeOkMethod> {
+            match self {
+                &QueueClass::PurgeOk(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn delete(&self) -> Option<&DeleteMethod> {
+            match self {
+                &QueueClass::Delete(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn delete_ok(&self) -> Option<&DeleteOkMethod> {
+            match self {
+                &QueueClass::DeleteOk(ref m) => Some(m),
+                _ => None,
+            }
+        }
+    }
+    // }}}
+
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct DeclareMethod {
@@ -363,6 +679,137 @@ pub mod basic {
         Recover(RecoverMethod),
         RecoverOk,
     }
+
+    // Implementation of BasicClass {{{
+    impl BasicClass {
+        pub fn qos(&self) -> Option<&QosMethod> {
+            match self {
+                &BasicClass::Qos(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn qos_ok(&self) -> Option<()> {
+            match self {
+                &BasicClass::QosOk => Some(()),
+                _ => None,
+            }
+        }
+
+        pub fn consume(&self) -> Option<&ConsumeMethod> {
+            match self {
+                &BasicClass::Consume(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn consume_ok(&self) -> Option<&ConsumeOkMethod> {
+            match self {
+                &BasicClass::ConsumeOk(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn cancel(&self) -> Option<&CancelMethod> {
+            match self {
+                &BasicClass::Cancel(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn cancel_ok(&self) -> Option<&CancelOkMethod> {
+            match self {
+                &BasicClass::CancelOk(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn publish(&self) -> Option<&PublishMethod> {
+            match self {
+                &BasicClass::Publish(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        // We can not use the name "return" as function name.
+        pub fn return_(&self) -> Option<&ReturnMethod> {
+            match self {
+                &BasicClass::Return(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn deliver(&self) -> Option<&DeliverMethod> {
+            match self {
+                &BasicClass::Deliver(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn get(&self) -> Option<&GetMethod> {
+            match self {
+                &BasicClass::Get(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn get_ok(&self) -> Option<&GetOkMethod> {
+            match self {
+                &BasicClass::GetOk(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn get_empty(&self) -> Option<&GetEmptyMethod> {
+            match self {
+                &BasicClass::GetEmpty(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn ack(&self) -> Option<&AckMethod> {
+            match self {
+                &BasicClass::Ack(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn reject(&self) -> Option<&RejectMethod> {
+            match self {
+                &BasicClass::Reject(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn nack(&self) -> Option<&NackMethod> {
+            match self {
+                &BasicClass::Nack(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn recover_async(&self) -> Option<&RecoverAsyncMethod> {
+            match self {
+                &BasicClass::RecoverAsync(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn recover(&self) -> Option<&RecoverMethod> {
+            match self {
+                &BasicClass::Recover(ref m) => Some(m),
+                _ => None,
+            }
+        }
+
+        pub fn recover_ok(&self) -> Option<()> {
+            match self {
+                &BasicClass::RecoverOk => Some(()),
+                _ => None,
+            }
+        }
+    }
+    // }}}
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct QosMethod {
@@ -498,88 +945,51 @@ pub mod tx {
         Rollback,
         RollbackOk,
     }
-}
-// }}}
 
+    // Implementation of TxClass {{{
+    impl TxClass {
+        pub fn select(&self) -> Option<()> {
+            match self {
+                &TxClass::Select => Some(()),
+                _ => None,
+            }
+        }
 
+        pub fn select_ok(&self) -> Option<()> {
+            match self {
+                &TxClass::SelectOk => Some(()),
+                _ => None,
+            }
+        }
 
-// Tests {{{
-#[cfg(test)]
-mod tests {
-    use args::*;
-    use frame::method::decoder::decode_argument_with_info;
-    use frame::method::encoder::encode_argument;
-    use std::io::Cursor;
+        pub fn commit(&self) -> Option<()> {
+            match self {
+                &TxClass::Commit => Some(()),
+                _ => None,
+            }
+        }
 
-    fn decode_and_encode_argument(arg: Argument) {
-        let mut dst = Vec::new();
-        let info = decoding_info_from_arg(&arg);
-        encode_argument(&arg, &mut dst).unwrap();
-        assert_eq!(
-            arg,
-            decode_argument_with_info(&mut Cursor::new(dst.into()), &info).unwrap()
-        );
-    }
+        pub fn commit_ok(&self) -> Option<()> {
+            match self {
+                &TxClass::CommitOk => Some(()),
+                _ => None,
+            }
+        }
 
+        pub fn rollback(&self) -> Option<()> {
+            match self {
+                &TxClass::Rollback => Some(()),
+                _ => None,
+            }
+        }
 
-    fn decoding_info_from_arg(arg: &Argument) -> ArgumentDecodingInfo {
-        match arg {
-            &Argument::Octet(_) => ArgumentDecodingInfo::Octet,
-            &Argument::Short(_) => ArgumentDecodingInfo::Short,
-            &Argument::Long(_) => ArgumentDecodingInfo::Long,
-            &Argument::LongLong(_) => ArgumentDecodingInfo::LongLong,
-            &Argument::Bits(_) => ArgumentDecodingInfo::Bits,
-            &Argument::ShortString(_) => ArgumentDecodingInfo::ShortString,
-            &Argument::LongString(_) => ArgumentDecodingInfo::LongString,
-            &Argument::Timestamp(_) => ArgumentDecodingInfo::Timestamp,
-            &Argument::FieldTable(_) => ArgumentDecodingInfo::FieldTable,
-            &Argument::FieldArray(_) => ArgumentDecodingInfo::FieldArray,
+        pub fn rollback_ok(&self) -> Option<()> {
+            match self {
+                &TxClass::RollbackOk => Some(()),
+                _ => None,
+            }
         }
     }
-
-    #[test]
-    fn decode_and_encode_simple_arguments() {
-        decode_and_encode_argument(Argument::Octet(42));
-        decode_and_encode_argument(Argument::Short(42));
-        decode_and_encode_argument(Argument::Long(42));
-        decode_and_encode_argument(Argument::LongLong(42));
-        decode_and_encode_argument(Argument::ShortString(
-            ShortString("HOGEHOGE Testing".into()),
-        ));
-        decode_and_encode_argument(Argument::LongString(LongString("FUGAFUGA Testing".into())));
-    }
-
-    #[test]
-    fn decode_and_encode_field_table() {
-        let long_str = FieldArgument::LongString(LongString("LongString HOGE!!!".into()));
-        let short_str = FieldArgument::ShortString(ShortString("ShortString HOGE!!!".into()));
-
-        let field_table = FieldTable(vec![
-            ("long string".into(), long_str),
-            ("short string".into(), short_str),
-        ]);
-        decode_and_encode_argument(Argument::FieldTable(field_table));
-    }
-
-    #[test]
-    fn decode_and_encode_nested_field_table() {
-        let long_str = FieldArgument::LongString(LongString("LongString HOGE!!!".into()));
-        let short_str = FieldArgument::ShortString(ShortString("ShortString HOGE!!!".into()));
-        let inner_field_table = FieldTable(vec![
-            ("long string".into(), long_str.clone()),
-            ("short string".into(), short_str.clone()),
-        ]);
-
-        let outer_field_table = FieldTable(vec![
-            (
-                "field table".into(),
-                FieldArgument::NestedTable(inner_field_table)
-            ),
-            ("outer long string".into(), long_str),
-            ("outer short string".into(), short_str),
-        ]);
-
-        decode_and_encode_argument(Argument::FieldTable(outer_field_table));
-    }
+    // }}}
 }
 // }}}

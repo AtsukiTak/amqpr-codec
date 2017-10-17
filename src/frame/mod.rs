@@ -23,7 +23,6 @@ pub struct Frame {
 
 #[derive(PartialEq, Clone, Debug)]
 pub struct FrameHeader {
-    pub frame_type: FrameType,
     pub channel: u16,
 }
 
@@ -44,3 +43,36 @@ pub enum FramePayload {
     ContentBody(ContentBodyPayload),
     Heartbeat,
 }
+
+
+// Implementation of Frame {{{
+impl Frame {
+    pub fn method(&self) -> Option<&MethodPayload> {
+        match &self.payload {
+            &FramePayload::Method(ref p) => Some(p),
+            _ => None,
+        }
+    }
+
+    pub fn content_header(&self) -> Option<&ContentHeaderPayload> {
+        match &self.payload {
+            &FramePayload::ContentHeader(ref p) => Some(p),
+            _ => None,
+        }
+    }
+
+    pub fn content_body(&self) -> Option<&ContentBodyPayload> {
+        match &self.payload {
+            &FramePayload::ContentBody(ref p) => Some(p),
+            _ => None,
+        }
+    }
+
+    pub fn heartbeat(&self) -> Option<()> {
+        match &self.payload {
+            &FramePayload::Heartbeat => Some(()),
+            _ => None,
+        }
+    }
+}
+// }}}

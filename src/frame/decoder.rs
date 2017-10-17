@@ -15,7 +15,8 @@ pub fn decode_frame(src: &mut BytesMut) -> Option<Frame> {
         Some(mut frame_bytes) => {
             debug!("Extracted a frame : {:?}", frame_bytes);
 
-            let (typ, channel, payload_size) = decode_header(frame_bytes.split_to(FRAME_HEADER_BYTE_SIZE));
+            let (typ, channel, payload_size) =
+                decode_header(frame_bytes.split_to(FRAME_HEADER_BYTE_SIZE));
 
             debug!("frame type is {:?}", typ);
             debug!("frame channel is {}", channel);
@@ -24,10 +25,7 @@ pub fn decode_frame(src: &mut BytesMut) -> Option<Frame> {
             let payload = decode_payload(&typ, frame_bytes.split_to(payload_size as usize));
 
             let frame = Frame {
-                header: FrameHeader {
-                    channel: channel,
-                    frame_type: typ,
-                },
+                header: FrameHeader { channel: channel },
                 payload: payload,
             };
 
