@@ -47,6 +47,30 @@ pub enum FramePayload {
 
 // Implementation of Frame {{{
 impl Frame {
+    pub fn new(channel: u16, payload: FramePayload) -> Frame {
+        Frame {
+            header: FrameHeader { channel: channel },
+            payload: payload,
+        }
+    }
+
+    pub fn new_method(channel: u16, payload: MethodPayload) -> Frame {
+        Frame::new(channel, FramePayload::Method(payload))
+    }
+
+    pub fn new_content_header(channel: u16, payload: ContentHeaderPayload) -> Frame {
+        Frame::new(channel, FramePayload::ContentHeader(payload))
+    }
+
+    pub fn new_content_body(channel: u16, payload: ContentBodyPayload) -> Frame {
+        Frame::new(channel, FramePayload::ContentBody(payload))
+    }
+
+    pub fn new_heartbeat(channel: u16) -> Frame {
+        Frame::new(channel, FramePayload::Heartbeat)
+    }
+
+
     pub fn method(&self) -> Option<&MethodPayload> {
         match &self.payload {
             &FramePayload::Method(ref p) => Some(p),
