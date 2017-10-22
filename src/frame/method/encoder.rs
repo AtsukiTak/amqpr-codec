@@ -355,9 +355,9 @@ impl InnerEncoder {
         bit4: bool,
         bit5: bool,
     ) -> InnerEncoder {
-        let byte = (bit1 as u8 * 0b_1000_000) + (bit2 as u8 * 0b_0100_0000) +
-            (bit3 as u8 * 0b_0010_0000) + (bit4 as u8 * 0b_0001_0000) +
-            (bit5 as u8 * 0b_0000_1000);
+        let byte = (bit1 as u8 * 0b_0000_0001) + (bit2 as u8 * 0b_0000_0010) +
+            (bit3 as u8 * 0b_0000_0100) + (bit4 as u8 * 0b_0000_1000) +
+            (bit5 as u8 * 0b_0001_0000);
         self.buf.put_u8(byte);
         self
     }
