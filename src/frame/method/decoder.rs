@@ -216,7 +216,7 @@ fn decode_long_str(payload: &mut Cursor<Bytes>) -> String {
 }
 
 
-fn decode_field_table(mut cursor: &mut Cursor<Bytes>) -> HashMap<String, FieldArgument> {
+fn decode_field_table(cursor: &mut Cursor<Bytes>) -> HashMap<String, FieldArgument> {
     debug!("decode field table");
 
     let size = cursor.get_u32::<BigEndian>() as u64;

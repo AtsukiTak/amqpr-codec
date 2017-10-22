@@ -19,10 +19,14 @@ extern crate log;
 
 pub mod frame;
 mod args;
+
 pub use args::FieldArgument;
+pub use frame::{Frame, FrameHeader, FramePayload};
+pub use frame::method;
+pub use frame::content_header;
+pub use frame::content_body;
 
 
-use frame::Frame;
 use bytes::BytesMut;
 use std::io::Error as IoError;
 

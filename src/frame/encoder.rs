@@ -4,8 +4,8 @@ use frame::*;
 
 
 const METHOD_TYPE_BYTE: u8 = 1;
-const CONTENT_BODY_TYPE_BYTE: u8 = 2;
-const CONTENT_HEADER_TYPE_BYTE: u8 = 3;
+const CONTENT_HEADER_TYPE_BYTE: u8 = 2;
+const CONTENT_BODY_TYPE_BYTE: u8 = 3;
 const HEARTBEAT_TYPE_BYTE: u8 = 8;
 
 

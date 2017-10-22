@@ -5,7 +5,7 @@ use std::io::Cursor;
 use super::ContentHeaderPayload;
 
 pub fn encode_payload(payload: ContentHeaderPayload) -> [u8; 14] {
-    debug!("Start endoging conent header");
+    debug!("Start encoging conent header");
 
     let mut dst = Cursor::new([0; 14]);
 
