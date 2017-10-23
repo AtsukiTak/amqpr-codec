@@ -1,6 +1,6 @@
 [package]
 name = "amqpr-codec"
-version = "0.2.2"
+version = "0.2.3"
 authors = ["AtsukiTak <takatomgoo@gmail.com>"]
 license = "MIT/Apache-2.0"
 description = "A tokio based amqp codec library mainly used by amqpr."
