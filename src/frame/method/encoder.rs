@@ -362,19 +362,19 @@ impl InnerEncoder {
         self
     }
 
-    fn encode_short_str(mut self, string: String) -> InnerEncoder {
+    fn encode_short_str(mut self, string: AmqpString) -> InnerEncoder {
         self.buf.put_u8(string.len() as u8);
         self.buf.put(string.as_bytes());
         self
     }
 
-    fn encode_long_str(mut self, string: String) -> InnerEncoder {
+    fn encode_long_str(mut self, string: AmqpString) -> InnerEncoder {
         self.buf.put_u32::<BigEndian>(string.len() as u32);
         self.buf.put(string.as_bytes());
         self
     }
 
-    fn encode_field_table(mut self, table: HashMap<String, FieldArgument>) -> InnerEncoder {
+    fn encode_field_table(mut self, table: HashMap<AmqpString, FieldArgument>) -> InnerEncoder {
         encode_field_table_0(&table, &mut self.buf);
         self
     }
@@ -387,12 +387,12 @@ impl InnerEncoder {
 
 
 // Encode field-table and field-array {{{
-fn encode_field_table_0(table: &HashMap<String, FieldArgument>, dst: &mut Vec<u8>) {
+fn encode_field_table_0(table: &HashMap<AmqpString, FieldArgument>, dst: &mut Vec<u8>) {
     let mut bytes = {
         let mut buf = Vec::new();
         for (item_name, item_value) in table.iter() {
             buf.put_u8(item_name.len() as u8);
-            buf.put(item_name);
+            buf.put_slice(item_name.as_bytes());
             encode_field_item(item_value, &mut buf);
         }
         buf

@@ -4,7 +4,7 @@ use std::io::Cursor;
 
 use super::ContentHeaderPayload;
 
-pub fn decode_payload(payload: BytesMut) -> ContentHeaderPayload {
+pub fn decode_payload(payload: &mut BytesMut) -> ContentHeaderPayload {
     let mut cursor = Cursor::new(payload);
 
     let class_id = cursor.get_u16::<BigEndian>();

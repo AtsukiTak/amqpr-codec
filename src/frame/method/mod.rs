@@ -16,7 +16,7 @@ pub mod encoder;
 
 use std::collections::HashMap;
 
-use args::FieldArgument;
+use args::{FieldArgument, AmqpString};
 
 pub use self::connection::ConnectionClass;
 pub use self::channel::ChannelClass;
@@ -199,27 +199,27 @@ pub mod connection {
     pub struct StartMethod {
         pub version_major: u8,
         pub version_minor: u8,
-        pub server_properties: HashMap<String, FieldArgument>,
-        pub mechanisms: String,
-        pub locales: String,
+        pub server_properties: HashMap<AmqpString, FieldArgument>,
+        pub mechanisms: AmqpString,
+        pub locales: AmqpString,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct StartOkMethod {
-        pub client_properties: HashMap<String, FieldArgument>,
-        pub mechanism: String,
-        pub response: String,
-        pub locale: String,
+        pub client_properties: HashMap<AmqpString, FieldArgument>,
+        pub mechanism: AmqpString,
+        pub response: AmqpString,
+        pub locale: AmqpString,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct SecureMethod {
-        pub challenge: String,
+        pub challenge: AmqpString,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct SecureOkMethod {
-        pub response: String,
+        pub response: AmqpString,
     }
 
     #[derive(PartialEq, Clone, Debug)]
@@ -238,27 +238,27 @@ pub mod connection {
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct OpenMethod {
-        pub virtual_host: String,
-        pub reserved1: String,
+        pub virtual_host: AmqpString,
+        pub reserved1: AmqpString,
         pub reserved2: bool,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct OpenOkMethod {
-        pub reserved1: String,
+        pub reserved1: AmqpString,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct CloseMethod {
         pub reply_code: u16,
-        pub reply_text: String,
+        pub reply_text: AmqpString,
         pub class_id: u16,
         pub method_id: u16,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct BlockedMethod {
-        pub reason: String,
+        pub reason: AmqpString,
     }
 }
 // }}}
@@ -266,6 +266,8 @@ pub mod connection {
 
 // Channel module {{{
 pub mod channel {
+    use super::*;
+
     #[derive(PartialEq, Clone, Debug)]
     pub enum ChannelClass {
         Open(OpenMethod),
@@ -324,12 +326,12 @@ pub mod channel {
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct OpenMethod {
-        pub reserved1: String,
+        pub reserved1: AmqpString,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct OpenOkMethod {
-        pub reserved1: String,
+        pub reserved1: AmqpString,
     }
 
     #[derive(PartialEq, Clone, Debug)]
@@ -345,7 +347,7 @@ pub mod channel {
     #[derive(PartialEq, Clone, Debug)]
     pub struct CloseMethod {
         pub reply_code: u16,
-        pub reply_text: String,
+        pub reply_text: AmqpString,
         pub class_id: u16,
         pub method_id: u16,
     }
@@ -432,20 +434,20 @@ pub mod exchange {
     #[derive(PartialEq, Clone, Debug)]
     pub struct DeclareMethod {
         pub reserved1: u16,
-        pub exchange: String,
-        pub typ: String,
+        pub exchange: AmqpString,
+        pub typ: AmqpString,
         pub passive: bool,
         pub durable: bool,
         pub auto_delete: bool, // rabbitmq-specific extension. In another implementation, this is reserved.
         pub internal: bool, // rabbitmq-specific extension. In another implementation, this is reserved.
         pub no_wait: bool,
-        pub arguments: HashMap<String, FieldArgument>,
+        pub arguments: HashMap<AmqpString, FieldArgument>,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct DeleteMethod {
         pub reserved1: u16,
-        pub exchange: String,
+        pub exchange: AmqpString,
         pub if_unused: bool,
         pub no_wait: bool,
     }
@@ -453,21 +455,21 @@ pub mod exchange {
     #[derive(PartialEq, Clone, Debug)]
     pub struct BindMethod {
         pub reserved1: u16,
-        pub destination: String,
-        pub source: String,
-        pub routing_key: String,
+        pub destination: AmqpString,
+        pub source: AmqpString,
+        pub routing_key: AmqpString,
         pub no_wait: bool,
-        pub arguments: HashMap<String, FieldArgument>,
+        pub arguments: HashMap<AmqpString, FieldArgument>,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct UnbindMethod {
         pub reserved1: u16,
-        pub destination: String,
-        pub source: String,
-        pub routing_key: String,
+        pub destination: AmqpString,
+        pub source: AmqpString,
+        pub routing_key: AmqpString,
         pub no_wait: bool,
-        pub arguments: HashMap<String, FieldArgument>,
+        pub arguments: HashMap<AmqpString, FieldArgument>,
     }
 }
 // }}}
@@ -569,18 +571,18 @@ pub mod queue {
     #[derive(PartialEq, Clone, Debug)]
     pub struct DeclareMethod {
         pub reserved1: u16,
-        pub queue: String,
+        pub queue: AmqpString,
         pub passive: bool,
         pub durable: bool,
         pub exclusive: bool,
         pub auto_delete: bool,
         pub no_wait: bool,
-        pub arguments: HashMap<String, FieldArgument>,
+        pub arguments: HashMap<AmqpString, FieldArgument>,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct DeclareOkMethod {
-        pub queue: String,
+        pub queue: AmqpString,
         pub message_count: u32,
         pub consumer_count: u32,
     }
@@ -588,26 +590,26 @@ pub mod queue {
     #[derive(PartialEq, Clone, Debug)]
     pub struct BindMethod {
         pub reserved1: u16,
-        pub queue: String,
-        pub exchange: String,
-        pub routing_key: String,
+        pub queue: AmqpString,
+        pub exchange: AmqpString,
+        pub routing_key: AmqpString,
         pub no_wait: bool,
-        pub arguments: HashMap<String, FieldArgument>,
+        pub arguments: HashMap<AmqpString, FieldArgument>,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct UnbindMethod {
         pub reserved1: u16,
-        pub queue: String,
-        pub exchange: String,
-        pub routing_key: String,
-        pub arguments: HashMap<String, FieldArgument>,
+        pub queue: AmqpString,
+        pub exchange: AmqpString,
+        pub routing_key: AmqpString,
+        pub arguments: HashMap<AmqpString, FieldArgument>,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct PurgeMethod {
         pub reserved1: u16,
-        pub queue: String,
+        pub queue: AmqpString,
         pub no_wait: bool,
     }
 
@@ -619,7 +621,7 @@ pub mod queue {
     #[derive(PartialEq, Clone, Debug)]
     pub struct DeleteMethod {
         pub reserved1: u16,
-        pub queue: String,
+        pub queue: AmqpString,
         pub if_unused: bool,
         pub if_empty: bool,
         pub no_wait: bool,
@@ -821,36 +823,36 @@ pub mod basic {
     #[derive(PartialEq, Clone, Debug)]
     pub struct ConsumeMethod {
         pub reserved1: u16,
-        pub queue: String,
-        pub consumer_tag: String,
+        pub queue: AmqpString,
+        pub consumer_tag: AmqpString,
         pub no_local: bool,
         pub no_ack: bool,
         pub exclusive: bool,
         pub no_wait: bool,
-        pub arguments: HashMap<String, FieldArgument>,
+        pub arguments: HashMap<AmqpString, FieldArgument>,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct ConsumeOkMethod {
-        pub consumer_tag: String,
+        pub consumer_tag: AmqpString,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct CancelMethod {
-        pub consumer_tag: String,
+        pub consumer_tag: AmqpString,
         pub no_wait: bool,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct CancelOkMethod {
-        pub consumer_tag: String,
+        pub consumer_tag: AmqpString,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct PublishMethod {
         pub reserved1: u16,
-        pub exchange: String,
-        pub routing_key: String,
+        pub exchange: AmqpString,
+        pub routing_key: AmqpString,
         pub mandatory: bool,
         pub immediate: bool,
     }
@@ -858,24 +860,24 @@ pub mod basic {
     #[derive(PartialEq, Clone, Debug)]
     pub struct ReturnMethod {
         pub reply_code: u16,
-        pub reply_text: String,
-        pub exchange: String,
-        pub routing_key: String,
+        pub reply_text: AmqpString,
+        pub exchange: AmqpString,
+        pub routing_key: AmqpString,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct DeliverMethod {
-        pub consumer_tag: String,
+        pub consumer_tag: AmqpString,
         pub delivery_tag: u64,
         pub redeliverd: bool,
-        pub exchange: String,
-        pub routing_key: String,
+        pub exchange: AmqpString,
+        pub routing_key: AmqpString,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct GetMethod {
         pub reserved1: u16,
-        pub queue: String,
+        pub queue: AmqpString,
         pub no_ack: bool,
     }
 
@@ -883,14 +885,14 @@ pub mod basic {
     pub struct GetOkMethod {
         pub delivery_tag: u64,
         pub redeliverd: bool,
-        pub exchange: String,
-        pub routing_key: String,
+        pub exchange: AmqpString,
+        pub routing_key: AmqpString,
         pub message_count: u32,
     }
 
     #[derive(PartialEq, Clone, Debug)]
     pub struct GetEmptyMethod {
-        pub reserved1: String,
+        pub reserved1: AmqpString,
     }
 
     #[derive(PartialEq, Clone, Debug)]

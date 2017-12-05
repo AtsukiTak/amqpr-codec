@@ -16,13 +16,13 @@ pub fn decode_frame(src: &mut BytesMut) -> Option<Frame> {
             debug!("Extracted a frame : {:?}", frame_bytes);
 
             let (typ, channel, payload_size) =
-                decode_header(frame_bytes.split_to(FRAME_HEADER_BYTE_SIZE));
+                decode_header(&mut frame_bytes.split_to(FRAME_HEADER_BYTE_SIZE));
 
             debug!("frame type is {:?}", typ);
             debug!("frame channel is {}", channel);
             debug!("frame payload_size is {}", payload_size);
 
-            let payload = decode_payload(&typ, frame_bytes.split_to(payload_size as usize));
+            let payload = decode_payload(&typ, &mut frame_bytes.split_to(payload_size as usize));
 
             let frame = Frame {
                 header: FrameHeader { channel: channel },
@@ -74,7 +74,7 @@ fn extract_frame_bytes(src: &mut BytesMut) -> Option<BytesMut> {
 ///
 /// # Panics
 /// when `src` does not have enough length.
-fn decode_header(bytes: BytesMut) -> (FrameType, u16, u32) {
+fn decode_header(bytes: &mut BytesMut) -> (FrameType, u16, u32) {
     let mut cursor = Cursor::new(bytes);
     let typ = match cursor.get_u8() {
         1 => FrameType::Method,
@@ -95,12 +95,12 @@ fn decode_header(bytes: BytesMut) -> (FrameType, u16, u32) {
 ///
 /// # Panics
 /// when `payload` does not have enough length.
-fn decode_payload(typ: &FrameType, payload: BytesMut) -> FramePayload {
+fn decode_payload(typ: &FrameType, bytes: &mut BytesMut) -> FramePayload {
     use self::FrameType::*;
     let payload = match *typ {
-        Method => FramePayload::Method(method::decoder::decode_payload(payload)),
-        ContentHeader => FramePayload::ContentHeader(content_header::decode_payload(payload)),
-        ContentBody => FramePayload::ContentBody(content_body::decode_payload(payload)),
+        Method => FramePayload::Method(method::decoder::decode_payload(bytes)),
+        ContentHeader => FramePayload::ContentHeader(content_header::decode_payload(bytes)),
+        ContentBody => FramePayload::ContentBody(content_body::decode_payload(bytes)),
         Heartbeat => FramePayload::Heartbeat,
     };
     payload
