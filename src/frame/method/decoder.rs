@@ -218,7 +218,7 @@ fn decode_long_str(bytes: &mut BytesMut) -> AmqpString {
 }
 
 
-fn decode_field_table(bytes: &mut BytesMut) -> HashMap<AmqpString, FieldArgument> {
+pub(crate) fn decode_field_table(bytes: &mut BytesMut) -> HashMap<AmqpString, FieldArgument> {
     debug!("decode field table");
 
     let size = Cursor::new(bytes.split_to(4)).get_u32::<BigEndian>() as u64;

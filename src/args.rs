@@ -30,6 +30,7 @@ pub enum FieldArgument {
 
 
 
+/// String being able to do Zero-cost conversion from `Bytes` or `&'static str`.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct AmqpString(pub(crate) Bytes);
 

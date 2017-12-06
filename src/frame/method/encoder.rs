@@ -387,7 +387,7 @@ impl InnerEncoder {
 
 
 // Encode field-table and field-array {{{
-fn encode_field_table_0(table: &HashMap<AmqpString, FieldArgument>, dst: &mut Vec<u8>) {
+pub(crate) fn encode_field_table_0(table: &HashMap<AmqpString, FieldArgument>, dst: &mut Vec<u8>) {
     let mut bytes = {
         let mut buf = Vec::new();
         for (item_name, item_value) in table.iter() {
